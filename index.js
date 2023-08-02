@@ -11,36 +11,33 @@ const router = require("./routes/index");
 
 const app = express();
 
-const PORT = process.env.PORT || 5006;
+const PORT = process.env.PORT || 8050;
 
 app.use(cors());
 
 app.use(express.json({ extended: true }));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+let root = require("path").join(__dirname, "/views");
+app.use(express.static(root));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"));
+});
 
 app.use("/api", router);
 
 app.use("/api/uploads", express.static(path.join(__dirname, "upload")));
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/build")));
-
-  app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "../client/build/index.html"))
-  );
-} else {
-  app.get("/", (req, res) => res.send("Please set to production"));
-}
 
 const start = async () => {
   try {
     await db.sequelize.authenticate();
     console.log("Соединение с БД было успешно установлено");
 
-    // await db.sequelize.sync({ alter: true });
-    // console.log("Все модели синхронизированы");
+    await db.sequelize.sync({ alter: true });
+    console.log("Все модели синхронизированы");
 
     app.listen(PORT, () => {
       console.log(`Сервер запущен успешно, номер порта: ${PORT}`);
