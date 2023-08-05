@@ -20,24 +20,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 
-let root = require("path").join(__dirname, "/views");
-app.use(express.static(root));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
-});
-
 app.use("/api", router);
 
 app.use("/api/uploads", express.static(path.join(__dirname, "upload")));
+
+let root = require("path").join(__dirname, "/views");
+app.use(express.static(root));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "index.html"));
+});
 
 const start = async () => {
   try {
     await db.sequelize.authenticate();
     console.log("Соединение с БД было успешно установлено");
 
-    await db.sequelize.sync({ alter: true });
-    console.log("Все модели синхронизированы");
+    // await db.sequelize.sync({ alter: true });
+    // console.log("Все модели синхронизированы");
 
     app.listen(PORT, () => {
       console.log(`Сервер запущен успешно, номер порта: ${PORT}`);
