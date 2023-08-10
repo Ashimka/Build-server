@@ -35,6 +35,7 @@ const getAllPosts = async (req, res) => {
         { model: db.tagPost, attributes: ["tags"] },
         { model: db.comment, attributes: ["text"] },
       ],
+      order: [["date", "DESC"]],
     });
     res.json({ posts });
   } catch (error) {

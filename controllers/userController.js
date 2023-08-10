@@ -8,8 +8,9 @@ const getMe = async (req, res) => {
       where: {
         id: userId,
       },
-      attributes: ["id", "email", "fullName", "avatarURL"],
+      attributes: ["id", "email", "fullName", "avatarURL", "createdAt"],
       include: [{ model: db.role, attributes: ["admin", "user"] }],
+      include: [{ model: db.post, attributes: ["viewsCount"] }],
     });
 
     if (!user) {

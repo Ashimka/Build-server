@@ -15,7 +15,7 @@ router.post(
   verifyRoles(ROLES_LIST.admin),
   postController.createTags
 );
-router.get("/tags", verifyJWT, postController.getTagsList);
+router.get("/tags", postController.getTagsList);
 router.get("/:id", postController.getOnePost);
 
 router.delete(
