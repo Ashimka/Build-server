@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-  const TagList = sequelize.define(
-    "tag_list",
+  const CatList = sequelize.define(
+    "cat_list",
     {
-      tag: {
+      cat: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -13,5 +13,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return TagList;
+  return CatList;
 };

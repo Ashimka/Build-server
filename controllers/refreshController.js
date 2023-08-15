@@ -25,7 +25,7 @@ const handleRefreshToken = async (req, res) => {
     refreshToken,
     process.env.REFRESH_TOKEN_SECRET,
     async (error, decoded) => {
-      if (error || foundUser.email !== decoded.email) {
+      if (error || foundUser.login !== decoded.login) {
         return res.status(403).json({ "message": "Нет авторизации2" });
       }
 
@@ -44,7 +44,7 @@ const handleRefreshToken = async (req, res) => {
       const accessToken = jwt.sign(
         {
           "UserInfo": {
-            "email": decoded.email,
+            "login": decoded.login,
             "id": decoded.id,
             roles,
           },

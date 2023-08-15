@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
-  const TagPost = sequelize.define(
-    "tag_post",
+  const CatPost = sequelize.define(
+    "cat_post",
     {
-      tags: {
+      cats: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -12,5 +12,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  return TagPost;
+  return CatPost;
 };

@@ -10,13 +10,14 @@ const ROLES_LIST = require("../config/rolesList");
 
 router.post("/", verifyJWT, postController.createPost);
 router.post(
-  "/tags",
+  "/cats",
   verifyJWT,
   verifyRoles(ROLES_LIST.admin),
-  postController.createTags
+  postController.createCats
 );
-router.get("/tags", postController.getTagsList);
+router.get("/cats", postController.getTagsList);
 router.get("/:id", postController.getOnePost);
+router.get("/", postController.getCategoriePost);
 
 router.delete(
   "/:id",

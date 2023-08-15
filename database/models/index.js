@@ -28,22 +28,22 @@ db.user = require("./User.js")(sequelize, DataTypes);
 db.role = require("./Role.js")(sequelize, DataTypes);
 db.post = require("./Post.js")(sequelize, DataTypes);
 db.comment = require("./Comment.js")(sequelize, DataTypes);
-db.tagList = require("./TagList.js")(sequelize, DataTypes);
-db.tagPost = require("./TagPost.js")(sequelize, DataTypes);
+db.CatList = require("./CatList.js")(sequelize, DataTypes);
+db.CatPost = require("./CatPost.js")(sequelize, DataTypes);
 
 const User = db.user;
 const Role = db.role;
 const Post = db.post;
 const Comment = db.comment;
-const TagList = db.tagList;
-const TagPost = db.tagPost;
+const CatList = db.CatList;
+const CatPost = db.CatPost;
 
 // связь один к одному User k Role
 User.hasOne(Role, {
   onDelete: "CASCADE",
 });
 
-Post.hasOne(TagPost, {
+Post.hasOne(CatPost, {
   onDelete: "CASCADE",
 });
 

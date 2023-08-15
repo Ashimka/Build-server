@@ -6,13 +6,13 @@ const jwt = require("jsonwebtoken");
 const db = require("../database/models");
 
 const handleLogin = async (req, res) => {
-  const { email, password } = req.body;
+  const { login, password } = req.body;
 
-  if (!email || !password) {
+  if (!login || !password) {
     return res.status(400).json({ "message": "Неверный логин или пароль" });
   }
 
-  const foundUser = await db.user.findOne({ where: { email } });
+  const foundUser = await db.user.findOne({ where: { login } });
   if (!foundUser) {
     return res.status(401).json({ "message": "Неверный логин или пароль" });
   }
@@ -36,7 +36,7 @@ const handleLogin = async (req, res) => {
     const accessToken = jwt.sign(
       {
         "UserInfo": {
-          "email": foundUser.email,
+          "login": foundUser.login,
           "id": foundUser.id,
           roles,
         },
@@ -46,7 +46,7 @@ const handleLogin = async (req, res) => {
     );
 
     const refreshToken = jwt.sign(
-      { "email": foundUser.email, "id": foundUser.id },
+      { "login": foundUser.login, "id": foundUser.id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" }
     );

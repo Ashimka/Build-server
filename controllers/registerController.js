@@ -3,16 +3,22 @@ const bcrypt = require("bcrypt");
 const db = require("../database/models");
 
 const handleNewUser = async (req, res) => {
-  const { email, password, fullName } = req.body;
+  const { email, password, login } = req.body;
 
-  if (!email || !password) {
+  if (!login || !password) {
     return res
       .status(400)
       .json({ "message": "Пользователь или пароль не найдены" });
   }
   //   Проверка на дубликат
-  const duplicate = await db.user.findOne({ where: { email } });
-  if (duplicate) {
+  const duplicateLogin = await db.user.findOne({ where: { login } });
+  if (duplicateLogin) {
+    return res
+      .status(409)
+      .json({ "message": "Пользователь с таким логином уже существует" });
+  }
+  const duplicateEmail = await db.user.findOne({ where: { email } });
+  if (duplicateEmail) {
     return res
       .status(409)
       .json({ "message": "Пользователь с таким email уже существует" });
@@ -22,9 +28,9 @@ const handleNewUser = async (req, res) => {
     // hash pass
     const hashPass = await bcrypt.hash(password, 10);
     const newUser = await db.user.create({
-      email,
+      login,
       password: hashPass,
-      fullName,
+      email,
     });
     const roleUser = await db.role.create({
       userId: newUser.id,

@@ -8,7 +8,7 @@ const getMe = async (req, res) => {
       where: {
         id: userId,
       },
-      attributes: ["id", "email", "fullName", "avatarURL", "createdAt"],
+      attributes: ["id", "email", "login", "avatarURL", "createdAt"],
       include: [
         { model: db.role, attributes: ["admin", "user"] },
         { model: db.post, attributes: ["viewsCount"] },
@@ -43,8 +43,8 @@ const getAllPostsUser = async (req, res) => {
     const posts = await db.post.findAll({
       where: { userId: id },
       include: [
-        { model: db.user, attributes: ["fullName", "avatarURL"] },
-        { model: db.tagPost, attributes: ["tags"] },
+        { model: db.user, attributes: ["login", "avatarURL"] },
+        { model: db.CatPost, attributes: ["cats"] },
         { model: db.comment, attributes: ["text"] },
       ],
     });

@@ -1,10 +1,11 @@
 const { format } = require("date-fns");
+const { Op } = require("sequelize");
 
 const db = require("../database/models");
 
 const createPost = async (req, res) => {
   try {
-    const { title, text, imageURL, tags } = req.body;
+    const { title, text, imageURL, cats } = req.body;
     const date = `${format(new Date(), "dd-MM-yyyy\tHH:mm")}`;
 
     const newPost = await db.post.create({
@@ -15,9 +16,9 @@ const createPost = async (req, res) => {
       date,
     });
 
-    const tagsPost = await db.tagPost.create({
+    const tagsPost = await db.CatPost.create({
       postId: newPost.id,
-      tags,
+      cats,
     });
 
     return res.status(201).json({ newPost });
@@ -31,8 +32,8 @@ const getAllPosts = async (req, res) => {
   try {
     const posts = await db.post.findAll({
       include: [
-        { model: db.user, attributes: ["fullName", "avatarURL"] },
-        { model: db.tagPost, attributes: ["tags"] },
+        { model: db.user, attributes: ["login", "avatarURL"] },
+        { model: db.CatPost, attributes: ["cats"] },
         { model: db.comment, attributes: ["text"] },
       ],
       order: [["date", "DESC"]],
@@ -55,12 +56,12 @@ const getOnePost = async (req, res) => {
     const post = await db.post.findOne({
       where: { id: postId },
       include: [
-        { model: db.user, attributes: ["fullName", "avatarURL"] },
-        { model: db.tagPost, attributes: ["tags"] },
+        { model: db.user, attributes: ["login", "avatarURL"] },
+        { model: db.CatPost, attributes: ["cats"] },
         {
           model: db.comment,
           attributes: ["text", "id", "userId", "date"],
-          include: [{ model: db.user, attributes: ["fullName", "avatarURL"] }],
+          include: [{ model: db.user, attributes: ["login", "avatarURL"] }],
         },
       ],
     });
@@ -68,6 +69,31 @@ const getOnePost = async (req, res) => {
     res.json({ post });
   } catch (error) {
     res.status(500).json({ "message": error.message });
+  }
+};
+
+const getCategoriePost = async (req, res) => {
+  try {
+    const cat = req.query.category;
+
+    const postId = await db.CatPost.findAll({
+      where: { cats: cat },
+      attributes: ["postId"],
+    });
+
+    const id = postId.map((id) => id.postId);
+
+    const posts = await db.post.findAll({
+      where: { id },
+      include: [
+        { model: db.user, attributes: ["login", "avatarURL"] },
+        { model: db.CatPost, attributes: ["cats"] },
+        { model: db.comment, attributes: ["text"] },
+      ],
+    });
+    res.json(posts);
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -92,7 +118,7 @@ const removePost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   try {
-    const { title, text, imageURL, tags } = req.body;
+    const { title, text, imageURL, cats } = req.body;
 
     const id = req.params.id;
     const userId = req.id;
@@ -101,7 +127,7 @@ const updatePost = async (req, res) => {
       where: { id },
     });
 
-    const postTagsUpdate = await db.tagPost.findOne({
+    const postTagsUpdate = await db.CatPost.findOne({
       where: {
         postId: id,
       },
@@ -111,7 +137,7 @@ const updatePost = async (req, res) => {
       postUpdate.imageURL = imageURL;
       postUpdate.title = title;
       postUpdate.text = text;
-      postTagsUpdate.tags = tags;
+      postTagsUpdate.cats = cats;
 
       await postUpdate.save();
       await postTagsUpdate.save();
@@ -125,21 +151,21 @@ const updatePost = async (req, res) => {
   }
 };
 
-const createTags = async (req, res) => {
+const createCats = async (req, res) => {
   try {
-    const { tag } = req.body;
+    const { cat } = req.body;
 
     //   Проверка на дубликат
-    const duplicate = await db.tagList.findOne({ where: { tag } });
+    const duplicate = await db.CatList.findOne({ where: { cat } });
     if (duplicate) {
-      return res.status(409).json({ "message": `Тег #${tag} уже существует` });
+      return res.status(409).json({ "message": `Тег #${cat} уже существует` });
     }
 
-    const tagList = await db.tagList.create({
-      tag,
+    const catList = await db.CatList.create({
+      cat,
     });
 
-    res.status(201).json({ message: "Tag create!" });
+    res.status(201).json({ message: "Categorie create!" });
   } catch (error) {
     res.status(500).json({ "message": error.message });
   }
@@ -147,10 +173,10 @@ const createTags = async (req, res) => {
 
 const getTagsList = async (req, res) => {
   try {
-    const tags = await db.tagList.findAll({
-      attributes: ["tag"],
+    const cats = await db.CatList.findAll({
+      attributes: ["cat"],
     });
-    res.json(tags);
+    res.json(cats);
   } catch (error) {
     res.status(500).json({ "message": error.message });
   }
@@ -160,8 +186,9 @@ module.exports = {
   createPost,
   getAllPosts,
   getOnePost,
+  getCategoriePost,
   removePost,
   updatePost,
-  createTags,
+  createCats,
   getTagsList,
 };
