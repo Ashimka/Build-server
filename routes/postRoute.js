@@ -8,7 +8,7 @@ const verifyJWT = require("../middleware/verifyJWT");
 const verifyRoles = require("../middleware/verifyRoles");
 const ROLES_LIST = require("../config/rolesList");
 
-router.post("/", verifyJWT, postController.createPost);
+router.post("/new", verifyJWT, postController.createPost);
 router.post(
   "/cats",
   verifyJWT,
