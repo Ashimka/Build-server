@@ -1,5 +1,4 @@
 const { format } = require("date-fns");
-const { Op } = require("sequelize");
 
 const db = require("../database/models");
 
@@ -7,6 +6,16 @@ const createPost = async (req, res) => {
   try {
     const { title, text, imageURL, cats } = req.body;
     const date = `${format(new Date(), "dd-MM-yyyy\tHH:mm")}`;
+
+    if (!title || !text) {
+      return res
+        .status(400)
+        .json({ "message": "Не заполнен заголовок или содержимое поста" });
+    }
+
+    if (!cats) {
+      return res.status(400).json({ message: "Выберите категорию поста" });
+    }
 
     const newPost = await db.post.create({
       title,
@@ -16,6 +25,7 @@ const createPost = async (req, res) => {
       date,
     });
 
+    console.log("cats", cats);
     const tagsPost = await db.CatPost.create({
       postId: newPost.id,
       cats,
