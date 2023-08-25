@@ -82,31 +82,6 @@ const getOnePost = async (req, res) => {
   }
 };
 
-const getCategoriePost = async (req, res) => {
-  try {
-    const cat = req.query.category;
-
-    const postId = await db.CatPost.findAll({
-      where: { cats: cat },
-      attributes: ["postId"],
-    });
-
-    const id = postId.map((id) => id.postId);
-
-    const posts = await db.post.findAll({
-      where: { id },
-      include: [
-        { model: db.user, attributes: ["login", "avatarURL"] },
-        { model: db.CatPost, attributes: ["cats"] },
-        { model: db.comment, attributes: ["text"] },
-      ],
-    });
-    res.json(posts);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 const removePost = async (req, res) => {
   try {
     const postId = req.params.id;
@@ -196,7 +171,6 @@ module.exports = {
   createPost,
   getAllPosts,
   getOnePost,
-  getCategoriePost,
   removePost,
   updatePost,
   createCats,

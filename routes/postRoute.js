@@ -17,7 +17,6 @@ router.post(
 );
 router.get("/cats", postController.getTagsList);
 router.get("/:id", postController.getOnePost);
-router.get("/", postController.getCategoriePost);
 
 router.delete(
   "/:id",
