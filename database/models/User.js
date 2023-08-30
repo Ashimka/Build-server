@@ -20,6 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     avatarURL: {
       type: DataTypes.STRING,
     },
+    isActivated: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    activationLink: {
+      type: DataTypes.STRING,
+    },
   });
 
   return User;

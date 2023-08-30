@@ -8,6 +8,8 @@ const logoutController = require("../controllers/logoutController");
 
 router.post("/register", registerController.handleNewUser);
 router.post("/login", loginController.handleLogin);
+
+router.get("/activate/:link", registerController.activateUser);
 router.get("/refresh", refreshController.handleRefreshToken);
 router.get("/logout", logoutController.handleLogout);
 
