@@ -13,6 +13,9 @@ router.post("/", fileUpload.single("image"), (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    if (error.originalStatus === 413) {
+      res.status(413).json({ message: "Допустимый размер изображений 1 Mb" });
+    }
   }
 });
 
