@@ -41,7 +41,7 @@ const handleNewUser = async (req, res) => {
 
     await mailService.sendActivationMail(
       email,
-      `http://localhost:3000/activate/${activationLink}`
+      `${process.env.URL_API}/activate/${activationLink}`
     );
 
     return res.status(201).json({ "message": "Регистрация прошла успешно!" });
