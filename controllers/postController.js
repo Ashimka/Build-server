@@ -1,5 +1,3 @@
-const { format } = require("date-fns");
-
 const db = require("../database/models");
 
 const createPost = async (req, res) => {
