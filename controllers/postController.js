@@ -5,7 +5,6 @@ const db = require("../database/models");
 const createPost = async (req, res) => {
   try {
     const { title, text, imageURL, cats } = req.body;
-    const date = `${format(new Date(), "dd-MM-yyyy\tHH:mm")}`;
 
     if (!title || !text) {
       return res
@@ -22,10 +21,8 @@ const createPost = async (req, res) => {
       text,
       imageURL,
       userId: req.id,
-      date,
     });
 
-    console.log("cats", cats);
     const tagsPost = await db.CatPost.create({
       postId: newPost.id,
       cats,
@@ -46,7 +43,7 @@ const getAllPosts = async (req, res) => {
         { model: db.CatPost, attributes: ["cats"] },
         { model: db.comment, attributes: ["text"] },
       ],
-      order: [["date", "DESC"]],
+      order: [["createdAt", "DESC"]],
     });
     res.json({ posts });
   } catch (error) {
@@ -70,7 +67,7 @@ const getOnePost = async (req, res) => {
         { model: db.CatPost, attributes: ["cats"] },
         {
           model: db.comment,
-          attributes: ["text", "id", "userId", "date"],
+          attributes: ["text", "id", "userId", "createdAt"],
           include: [{ model: db.user, attributes: ["login", "avatarURL"] }],
         },
       ],

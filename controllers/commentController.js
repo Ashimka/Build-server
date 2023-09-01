@@ -8,13 +8,10 @@ const createComment = async (req, res) => {
     const userId = req.id;
     const postId = req.params.id;
 
-    const date = `${format(new Date(), "dd-MM-yyyy\tHH:mm")}`;
-
     const newComment = await db.comment.create({
       text,
       userId,
       postId,
-      date,
     });
 
     return res.status(201).json({ newComment });
@@ -22,7 +19,7 @@ const createComment = async (req, res) => {
     console.log(error);
     res
       .status(500)
-      .json({ message: "Зарегистрируйтесьб чтобы оставить комментарий" });
+      .json({ message: "Зарегистрируйтесь чтобы оставить комментарий" });
   }
 };
 
