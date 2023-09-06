@@ -1,11 +1,10 @@
-const { format } = require("date-fns");
-
 const db = require("../database/models");
+const dataOptions = require("../config/dataOptions");
 
 const createPost = async (req, res) => {
   try {
     const { title, text, imageURL, cats } = req.body;
-    const date = `${format(new Date(), "dd-MM-yyyy\tHH:mm")}`;
+    const date = new Intl.DateTimeFormat("ru", dataOptions).format(new Date());
 
     if (!title || !text) {
       return res
@@ -25,7 +24,6 @@ const createPost = async (req, res) => {
       date,
     });
 
-    console.log("cats", cats);
     const tagsPost = await db.CatPost.create({
       postId: newPost.id,
       cats,

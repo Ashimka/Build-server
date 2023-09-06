@@ -1,6 +1,5 @@
-const { format } = require("date-fns");
-
 const db = require("../database/models");
+const dataOptions = require("../config/dataOptions");
 
 const createComment = async (req, res) => {
   try {
@@ -8,7 +7,7 @@ const createComment = async (req, res) => {
     const userId = req.id;
     const postId = req.params.id;
 
-    const date = `${format(new Date(), "dd-MM-yyyy\tHH:mm")}`;
+    const date = new Intl.DateTimeFormat("ru", dataOptions).format(new Date());
 
     const newComment = await db.comment.create({
       text,
