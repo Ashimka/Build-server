@@ -39,8 +39,6 @@ const createPost = async (req, res) => {
 const getAllPosts = async (req, res) => {
   try {
     const pageNumber = Number.parseInt(req.query.page);
-    const limit = req.query.limit;
-    const offset = req.query.offset;
 
     let page = 0;
     const size = 4;
