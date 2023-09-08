@@ -38,7 +38,18 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    const posts = await db.post.findAll({
+    const pageNumber = Number.parseInt(req.query.page);
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+
+    let page = 0;
+    const size = 4;
+    if (!Number.isNaN(pageNumber) && pageNumber > 0) {
+      page = pageNumber;
+    }
+    const posts = await db.post.findAndCountAll({
+      limit: size,
+      offset: page * size,
       include: [
         { model: db.user, attributes: ["login", "avatarURL"] },
         { model: db.CatPost, attributes: ["cats"] },
@@ -46,7 +57,10 @@ const getAllPosts = async (req, res) => {
       ],
       order: [["date", "DESC"]],
     });
-    res.json({ posts });
+    res.json({
+      posts: posts.rows,
+      totalPages: Math.ceil(posts.count / Number.parseInt(size)),
+    });
   } catch (error) {
     res.status(500).json({ "message": error.message });
   }
