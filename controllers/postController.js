@@ -1,6 +1,8 @@
 const db = require("../database/models");
 const dataOptions = require("../config/dataOptions");
 
+const size = 5;
+
 const createPost = async (req, res) => {
   try {
     const { title, text, imageURL, cats } = req.body;
@@ -41,7 +43,7 @@ const getAllPosts = async (req, res) => {
     const pageNumber = Number.parseInt(req.query.page);
 
     let page = 0;
-    const size = 4;
+
     if (!Number.isNaN(pageNumber) && pageNumber > 0) {
       page = pageNumber;
     }
@@ -53,6 +55,75 @@ const getAllPosts = async (req, res) => {
         { model: db.CatPost, attributes: ["cats"] },
         { model: db.comment, attributes: ["text"] },
       ],
+
+      order: [["date", "DESC"]],
+    });
+    res.json({
+      posts: posts.rows,
+      totalPages: Math.ceil(posts.count / Number.parseInt(size)),
+    });
+  } catch (error) {
+    res.status(500).json({ "message": error.message });
+  }
+};
+
+const getPopularPosts = async (req, res) => {
+  try {
+    const pageNumber = Number.parseInt(req.query.page);
+
+    let page = 0;
+
+    if (!Number.isNaN(pageNumber) && pageNumber > 0) {
+      page = pageNumber;
+    }
+    const posts = await db.post.findAndCountAll({
+      limit: size,
+      offset: page * size,
+      include: [
+        { model: db.user, attributes: ["login", "avatarURL"] },
+        { model: db.CatPost, attributes: ["cats"] },
+        { model: db.comment, attributes: ["text"] },
+      ],
+
+      order: [["viewsCount", "DESC"]],
+    });
+    res.json({
+      posts: posts.rows,
+      totalPages: Math.ceil(posts.count / Number.parseInt(size)),
+    });
+  } catch (error) {
+    res.status(500).json({ "message": error.message });
+  }
+};
+
+const getCategoryPosts = async (req, res) => {
+  try {
+    const category = req.params.cat;
+    const pageNumber = Number.parseInt(req.query.page);
+
+    let id = [];
+    let page = 0;
+
+    if (!Number.isNaN(pageNumber) && pageNumber > 0) {
+      page = pageNumber;
+    }
+    const catPosts = await db.CatPost.findAll({
+      where: { cats: category },
+      attributes: ["postId"],
+    });
+
+    const getIdPosts = catPosts.map((item) => id.push(item.postId));
+
+    const posts = await db.post.findAndCountAll({
+      where: { id },
+      limit: size,
+      offset: page * size,
+      include: [
+        { model: db.user, attributes: ["login", "avatarURL"] },
+        { model: db.CatPost, attributes: ["cats"] },
+        { model: db.comment, attributes: ["text"] },
+      ],
+
       order: [["date", "DESC"]],
     });
     res.json({
@@ -180,6 +251,8 @@ const getTagsList = async (req, res) => {
 module.exports = {
   createPost,
   getAllPosts,
+  getPopularPosts,
+  getCategoryPosts,
   getOnePost,
   removePost,
   updatePost,
