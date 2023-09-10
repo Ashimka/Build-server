@@ -4,7 +4,10 @@ const dataOptions = require("../config/dataOptions");
 const createPost = async (req, res) => {
   try {
     const { title, text, imageURL, cats } = req.body;
+<<<<<<< HEAD
     const date = new Intl.DateTimeFormat("ru", dataOptions).format(new Date());
+=======
+>>>>>>> d61298e606ac4cacc7a204ed830d9f70bda7674b
 
     if (!title || !text) {
       return res
@@ -21,7 +24,6 @@ const createPost = async (req, res) => {
       text,
       imageURL,
       userId: req.id,
-      date,
     });
 
     const tagsPost = await db.CatPost.create({
@@ -44,7 +46,7 @@ const getAllPosts = async (req, res) => {
         { model: db.CatPost, attributes: ["cats"] },
         { model: db.comment, attributes: ["text"] },
       ],
-      order: [["date", "DESC"]],
+      order: [["createdAt", "DESC"]],
     });
     res.json({ posts });
   } catch (error) {
@@ -68,7 +70,7 @@ const getOnePost = async (req, res) => {
         { model: db.CatPost, attributes: ["cats"] },
         {
           model: db.comment,
-          attributes: ["text", "id", "userId", "date"],
+          attributes: ["text", "id", "userId", "createdAt"],
           include: [{ model: db.user, attributes: ["login", "avatarURL"] }],
         },
       ],
