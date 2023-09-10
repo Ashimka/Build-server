@@ -1,7 +1,10 @@
+require("dotenv").config();
+
 const db = require("../database/models");
 const dataOptions = require("../config/dataOptions");
 
-const size = 5;
+const size = Number.parseInt(process.env.SIZE_PAGE);
+// const size = 2;
 
 const createPost = async (req, res) => {
   try {
