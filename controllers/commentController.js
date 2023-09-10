@@ -37,7 +37,7 @@ const deleteComment = async (req, res) => {
       return res.json({ message: "Комментарий не найден" });
     }
 
-    const result = await db.comment.destroy({
+    await db.comment.destroy({
       where: { id },
     });
 
