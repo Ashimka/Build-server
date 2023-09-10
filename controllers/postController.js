@@ -58,12 +58,7 @@ const getAllPosts = async (req, res) => {
         { model: db.CatPost, attributes: ["cats"] },
         { model: db.comment, attributes: ["text"] },
       ],
-<<<<<<< HEAD
-      order: [["createdAt", "DESC"]],
-=======
-
       order: [["date", "DESC"]],
->>>>>>> pagination
     });
     res.json({
       posts: posts.rows,
