@@ -15,6 +15,8 @@ router.post(
   verifyRoles(ROLES_LIST.admin),
   postController.createCats
 );
+
+router.get("/category/:cat", postController.getCategoryPosts);
 router.get("/cats", postController.getTagsList);
 router.get("/:id", postController.getOnePost);
 
