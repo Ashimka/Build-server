@@ -7,15 +7,13 @@ const createComment = async (req, res) => {
     const userId = req.id;
     const postId = req.params.id;
 
-<<<<<<< HEAD
     const date = new Intl.DateTimeFormat("ru", dataOptions).format(new Date());
 
-=======
->>>>>>> d61298e606ac4cacc7a204ed830d9f70bda7674b
     const newComment = await db.comment.create({
       text,
       userId,
       postId,
+      date,
     });
 
     return res.status(201).json({ newComment });
