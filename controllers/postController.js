@@ -4,10 +4,8 @@ const dataOptions = require("../config/dataOptions");
 const createPost = async (req, res) => {
   try {
     const { title, text, imageURL, cats } = req.body;
-<<<<<<< HEAD
+
     const date = new Intl.DateTimeFormat("ru", dataOptions).format(new Date());
-=======
->>>>>>> d61298e606ac4cacc7a204ed830d9f70bda7674b
 
     if (!title || !text) {
       return res
