@@ -4,7 +4,6 @@ const db = require("../database/models");
 const dataOptions = require("../config/dataOptions");
 
 const size = Number.parseInt(process.env.SIZE_PAGE);
-// const size = 2;
 
 const createPost = async (req, res) => {
   try {
@@ -27,6 +26,7 @@ const createPost = async (req, res) => {
       text,
       imageURL,
       userId: req.id,
+      date,
     });
 
     const tagsPost = await db.CatPost.create({
