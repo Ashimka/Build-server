@@ -13,7 +13,8 @@ const handleLogin = async (req, res) => {
   }
 
   const foundUser = await db.user.findOne({ where: { login } });
-  if (!foundUser) {
+
+  if (login !== foundUser.login) {
     return res.status(401).json({ "message": "Неверный логин или пароль" });
   }
 
